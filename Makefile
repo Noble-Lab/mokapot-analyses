@@ -1,12 +1,12 @@
 # Change this to point to your version of MSFragger
-export MSFRAGGER_PATH = ~/bin/MSFragger-3.1.1/MSFragger-3.1.1.jar
+export MSFRAGGER_PATH ?= ~/bin/MSFragger-3.1.1/MSFragger-3.1.1.jar
 
 kim = data/pin/kim.pin.gz
 percolator = scripts/percolator/make_figures.html
 scope = scripts/scope/make_figures.html
 rna = scripts/rna-xl/make_figures.html
 
-all: install ${kim} ${scope} ${rna} ${percolator} benchmark
+all: install ${kim} ${scope} ${rna} ${percolator} benchmark wrapup
 
 install:
 	conda install -c conda-forge \
@@ -52,3 +52,7 @@ ${rna}:
 	cd scripts/rna && \
 	python3 runall.py && \
 	nbconvert --to html make_figures.ipynb
+
+$wrapup:
+	mkdir -b figures && \
+	cp */*/figures/*.png figures
