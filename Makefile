@@ -12,7 +12,7 @@ install:
 	conda install -c conda-forge tqdm numpy pandas matplotlib seaborn \
 		scikit-learn numba mono nbconvert xgboost
 	conda install -c bioconda thermorawfileparser percolator triqler
-	pip install mokapot
+	pip install mokapot ppx
 	pip install git+git://github.com/wfondrie/wispy
 
 ${kim}:
