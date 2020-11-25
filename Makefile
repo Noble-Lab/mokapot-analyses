@@ -11,7 +11,7 @@ all: install ${kim} ${scope} ${rna} ${percolator} benchmark
 install:
 	conda install -c conda-forge tqdm numpy pandas matplotlib seaborn \
 		scikit-learn numba mono nbconvert xgboost
-	conda install -c bioconda thermorawfileparser percolator
+	conda install -c bioconda thermorawfileparser percolator triqler
 	pip install mokapot
 	pip install git+git://github.com/wfondrie/wispy
 
@@ -20,20 +20,20 @@ ${kim}:
 	wget -N -O data/pin/kim.pin.gz https://ndownloader.figshare.com/files/19068101
 
 benchmark: ${kim}
-	cd scripts/benchmark
+	cd scripts/benchmark && \
 	./cluster.sh
 
 ${percolator}: ${scope}
-	cd scripts/percolator
-	python3 runall.py
+	cd scripts/percolator && \
+	python3 runall.py && \
 	nbconvert --to html make_figures.ipynb
 
 ${scope}:
-	cd scripts/scope
-	python3 runall.py
+	cd scripts/scope && \
+	python3 runall.py && \
 	nbconvert --to html make_figures.ipynb
 
 ${rna}:
-	cd scripts/rna
-	python3 runall.py
+	cd scripts/rna && \
+	python3 runall.py && \
 	nbconvert --to html make_figures.ipynb
