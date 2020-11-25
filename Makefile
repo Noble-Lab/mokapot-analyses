@@ -1,19 +1,34 @@
 # Change this to point to your version of MSFragger
-export MSFRAGGER_PATH = "~/bin/MSFragger-3.1.1/MSFragger-3.1.1.jar"
+export MSFRAGGER_PATH = ~/bin/MSFragger-3.1.1/MSFragger-3.1.1.jar
 
-kim = "./data/pin/kim.pin.gz"
-percolator = "./scripts/percolator/make_figures.html"
-scope = "./scripts/scope/make_figures.html"
-rna = "./scripts/rna-xl/make_figures.html"
+kim = data/pin/kim.pin.gz
+percolator = scripts/percolator/make_figures.html
+scope = scripts/scope/make_figures.html
+rna = scripts/rna-xl/make_figures.html
 
 all: install ${kim} ${scope} ${rna} ${percolator} benchmark
 
 install:
-	conda install -c conda-forge tqdm numpy pandas matplotlib seaborn \
-		scikit-learn numba mono nbconvert xgboost wget && \
-	conda install -c bioconda thermorawfileparser percolator triqler && \
-	pip install mokapot ppx && \
-	pip install git+git://github.com/wfondrie/wispy
+	conda install -c conda-forge \
+		tqdm \
+		numpy \
+		pandas \
+		matplotlib \
+		seaborn \
+		scikit-learn \
+		numba \
+		mono \
+		nbconvert \
+		xgboost \
+		wget && \
+	conda install -c bioconda \
+		thermorawfileparser \
+		percolator \
+		triqler && \
+	pip install \
+		git+git://github.com/wfondrie/mokapot \
+	 	git+git://github.com/wfondrie/wispy \
+		ppx
 
 ${kim}:
 	mkdir -p data/pin && \
