@@ -82,12 +82,12 @@ def make_decoys(fasta, outfile, concat=True, **kwargs):
         subprocess.run(" ".join(cmd), check=True, shell=True)
         decoys = os.path.join(tmp, "generate-peptides.proteins.decoy.txt")
 
-        with open(outfile, 'wb') as fout:
+        with open(outfile, "wb") as fout:
             if concat:
-                with open(fasta, 'rb') as target_file:
+                with open(fasta, "rb") as target_file:
                     shutil.copyfileobj(target_file, fout)
 
-            with open(decoys, 'rb') as decoy_file:
+            with open(decoys, "rb") as decoy_file:
                 shutil.copyfileobj(decoy_file, fout)
 
     return outfile

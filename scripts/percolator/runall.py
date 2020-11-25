@@ -9,12 +9,8 @@ import mokapot
 import pandas as pd
 
 # Setup -----------------------------------------------------------------------
-PIN = os.path.join(
-    "..", "scope", "pin-out", "190222S_LCA9_X_FP94_col22.make-pin.pin"
-)
-FASTA = os.path.join(
-    "..", "..", "data", "fasta", "human_swissprot_2019-09.fasta"
-)
+PIN = os.path.join("..", "scope", "pin-out", "190222S_LCA9_X_FP94_col22.make-pin.pin")
+FASTA = os.path.join("..", "..", "data", "fasta", "human_swissprot_2019-09.fasta")
 
 
 # Functions -------------------------------------------------------------------
@@ -24,14 +20,15 @@ def run_mokapot(pin, fasta):
     os.makedirs(out_dir, exist_ok=True)
 
     out_base = os.path.join(out_dir, "mokapot.{level}.txt")
-    out_files = [out_base.format(level=l)
-                 for l in ["psms", "peptides", "proteins"]]
+    out_files = [out_base.format(level=l) for l in ["psms", "peptides", "proteins"]]
 
     if not all([os.path.isfile(f) for f in out_files]):
         cmd = [
             "mokapot",
-            "--dest_dir", out_dir,
-            "--proteins", fasta,
+            "--dest_dir",
+            out_dir,
+            "--proteins",
+            fasta,
             pin,
         ]
 
@@ -46,20 +43,25 @@ def run_percolator(pin, fasta):
     os.makedirs(out_dir, exist_ok=True)
 
     out_base = os.path.join(out_dir, "percolator.{level}.txt")
-    out_files = [out_base.format(level=l)
-                 for l in ["psms", "peptides", "proteins"]]
+    out_files = [out_base.format(level=l) for l in ["psms", "peptides", "proteins"]]
 
     if not all([os.path.isfile(f) for f in out_files]):
         cmd = [
             "percolator",
-            "--results-psms", out_files[0],
-            "--results-peptides", out_files[1],
-            "--results-proteins", out_files[2],
-            "--picked-protein", fasta,
-            "--protein-decoy-pattern", "decoy_",
+            "--results-psms",
+            out_files[0],
+            "--results-peptides",
+            out_files[1],
+            "--results-proteins",
+            out_files[2],
+            "--picked-protein",
+            fasta,
+            "--protein-decoy-pattern",
+            "decoy_",
             "--post-processing-tdc",
-            "--seed", "42",
-            pin
+            "--seed",
+            "42",
+            pin,
         ]
 
         subprocess.run(cmd, check=True)
@@ -79,8 +81,9 @@ def parse_results(res_files):
         moka_res = pd.read_table(moka_file)
 
         if level == "proteins":
-            moka_res["ProteinId"] = (moka_res["mokapot protein group"]
-                                     .str.split(", ", expand=True)[0])
+            moka_res["ProteinId"] = moka_res["mokapot protein group"].str.split(
+                ", ", expand=True
+            )[0]
             perc_res = perc_res.rename(
                 columns={
                     "q-value": "percolator q-value",
@@ -110,17 +113,13 @@ def parse_results(res_files):
         logging.info("  - Percolator: %i (%i)", len(perc_res), perc_sum)
         logging.info("  - Merged: %i", len(merged))
 
-        merged.to_csv(os.path.join(out_dir, f"{level}.txt"), sep="\t",
-                      index=False)
+        merged.to_csv(os.path.join(out_dir, f"{level}.txt"), sep="\t", index=False)
 
 
 # Main ------------------------------------------------------------------------
 def main():
     """The main function"""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(levelname)s: %(message)s"
-    )
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
     perc_res = run_percolator(PIN, FASTA)
     moka_res = run_mokapot(PIN, FASTA)

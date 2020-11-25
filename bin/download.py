@@ -35,8 +35,7 @@ def rnaxl(experiment="human") -> List[str]:
     if experiment == "human":
         mzml_files = [f for f in all_files if "XL_human_RBPs" in f]
     elif experiment == "yeast":
-        mzml_files = [f for f in all_files if "XL_yeast_RBPs_Ex" in f
-                      and "UV" in f]
+        mzml_files = [f for f in all_files if "XL_yeast_RBPs_Ex" in f and "UV" in f]
     elif experiment == "invivo":
         mzml_files = [f for f in all_files if "XL_yeast_RBPs_invivo_4SU_Ex" in f]
 
@@ -62,18 +61,19 @@ def scope2() -> List[str]:
     os.makedirs(raw_dir, exist_ok=True)
     os.makedirs(mzml_dir, exist_ok=True)
 
-    skip = ["190228S_LCA9_X_FP94BF.raw",
-            "190321S_LCA10_X_FP97BE.raw"]
+    skip = ["190228S_LCA9_X_FP94BF.raw", "190321S_LCA10_X_FP97BE.raw"]
 
     dataset = ppx.MSVDataset("MSV000083945")
-    raw_files = [f for f in dataset.list_files("raw/scope2_raw")
-                 if f.endswith(".raw") and f not in skip]
-    out_files = [os.path.join(mzml_dir, f.replace(".raw", ".mzML.gz"))
-                 for f in raw_files]
+    raw_files = [
+        f
+        for f in dataset.list_files("raw/scope2_raw")
+        if f.endswith(".raw") and f not in skip
+    ]
+    out_files = [
+        os.path.join(mzml_dir, f.replace(".raw", ".mzML.gz")) for f in raw_files
+    ]
 
     raw_files = ["raw/scope2_raw/" + f for f in raw_files]
-
-    print([f for f in out_files if not os.path.isfile(f)])
 
     if not all([os.path.isfile(f) for f in out_files]):
         logging.info("Downloading...")
@@ -105,26 +105,17 @@ def convert(raw, dest_dir=".", gzip=False):
     ex_path = os.path.join(os.path.dirname(sys.executable), "ThermoRawFileParser.exe")
 
     ext = ".mzML"
-    cmd = [
-        "mono",
-        ex_path,
-        "-i=" + raw,
-        "-o=" + dest_dir,
-        "-f=2",
-        "-m=1"
-    ]
+    cmd = ["mono", ex_path, "-i=" + raw, "-o=" + dest_dir, "-f=2", "-m=1"]
 
     if gzip:
         cmd += ["-g"]
         ext += ".gz"
 
-    out_file = os.path.join(
-        dest_dir, os.path.split(raw)[-1].replace(".raw", ext)
-    )
+    out_file = os.path.join(dest_dir, os.path.split(raw)[-1].replace(".raw", ext))
     if not os.path.isfile(out_file):
         subprocess.run(cmd, check=True)
 
-    assert os.path.isfile(out_file) # verify that it is actually there!
+    assert os.path.isfile(out_file)  # verify that it is actually there!
     return out_file
 
 
@@ -139,11 +130,13 @@ def _download_and_convert(dataset, out_dir, raw_files=None):
     if raw_files is None:
         raw_files = [f for f in dataset.list_files() if f.endswith(".raw")]
 
-    out_files = [os.path.join(mzml_dir, f.replace(".raw", ".mzML.gz"))
-                 for f in raw_files]
+    out_files = [
+        os.path.join(mzml_dir, f.replace(".raw", ".mzML.gz")) for f in raw_files
+    ]
 
-    out_files = [os.path.join(mzml_dir, f.replace(".raw", ".mzML.gz"))
-                 for f in raw_files]
+    out_files = [
+        os.path.join(mzml_dir, f.replace(".raw", ".mzML.gz")) for f in raw_files
+    ]
 
     if not all([os.path.isfile(f) for f in out_files]):
         logging.info("Downloading...")

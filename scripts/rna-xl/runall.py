@@ -26,8 +26,7 @@ import search
 MISSED_CLEAVAGES = 2
 TOP_MATCH = 5
 EXPERIMENT = "yeast"
-FASTA = os.path.join("..", "..", "data", "fasta",
-                     "yeast_sp_2020-11.fasta")
+FASTA = os.path.join("..", "..", "data", "fasta", "yeast_sp_2020-11.fasta")
 
 logging.basicConfig(
     format=("[%(levelname)s]: %(message)s"),
@@ -43,8 +42,9 @@ def run_fragger(mzml_files, fasta, force_=False):
         mzml_files = [mzml_files]
 
     base = [os.path.splitext(f)[0] for f in mzml_files]
-    out_files = [os.path.join("fragger-out", os.path.split(f)[-1]) + ".pin"
-                 for f in base]
+    out_files = [
+        os.path.join("fragger-out", os.path.split(f)[-1]) + ".pin" for f in base
+    ]
     all_exist = all([os.path.isfile(f) for f in out_files])
     if all_exist and not force_:
         return out_files
@@ -63,7 +63,7 @@ def run_fragger(mzml_files, fasta, force_=False):
         "allowed_missed_cleavage": MISSED_CLEAVAGES,
         "output_format": "tsv_pin",
         "output_report_topN": "5",
-        "report_alternative_proteins": "1"
+        "report_alternative_proteins": "1",
     }
 
     search.msfragger(mzml_files, **fragger_args)
@@ -95,23 +95,27 @@ def update_fragger(pin_files, top_match=5):
             "precursor_neutral_mass",
             "massdiff",
         ]
-        tsv_df = (tsv_df.loc[:, cols]
-                  .rename(columns={
-                      "scannum": "ScanNr",
-                      "hit_rank": "rank",
-                      "precursor_neutral_mass": "ExpMass"}))
+        tsv_df = tsv_df.loc[:, cols].rename(
+            columns={
+                "scannum": "ScanNr",
+                "hit_rank": "rank",
+                "precursor_neutral_mass": "ExpMass",
+            }
+        )
 
         pin_df = pd.merge(tsv_df, pin_df)
         pin_df["group"] = "unmodified"
         pin_df.loc[pin_df["abs_ppm"] > 50, "group"] = "modified"
 
-        new_cols = ["group"] + list(pin_df.columns)[:pin_df.shape[1] - 1]
+        new_cols = ["group"] + list(pin_df.columns)[: pin_df.shape[1] - 1]
         pin_df = pin_df.loc[:, new_cols]
-        pin_df["Peptide"] = (pin_df["Peptide"] + "[" + pin_df["massdiff"].round(2).astype(str) + "]")
+        pin_df["Peptide"] = (
+            pin_df["Peptide"] + "[" + pin_df["massdiff"].round(2).astype(str) + "]"
+        )
 
-        pin_df = (pin_df
-                  .loc[pin_df["rank"] <= top_match, :]
-                  .drop(columns=["delta_hyperscore", "massdiff"]))
+        pin_df = pin_df.loc[pin_df["rank"] <= top_match, :].drop(
+            columns=["delta_hyperscore", "massdiff"]
+        )
 
         pin_df.to_csv(out_file, index=False, sep="\t")
 
@@ -120,9 +124,7 @@ def update_fragger(pin_files, top_match=5):
 
 def run_mokapot(psms, model="linear", force_=False):
     """Run mokapot with a various or no model."""
-    out_res = os.path.join(
-        "mokapot-out", f"{model}.modified.mokapot.psms.txt"
-        )
+    out_res = os.path.join("mokapot-out", f"{model}.modified.mokapot.psms.txt")
     if os.path.isfile(out_res) and not force_:
         return out_res
 
@@ -150,7 +152,7 @@ def run_mokapot(psms, model="linear", force_=False):
             "scale_pos_weight": np.logspace(0, 2, 3),
             "max_depth": [1, 3, 6],
             "min_child_weight": [1, 10, 100],
-            "gamma": [0, 1, 10]
+            "gamma": [0, 1, 10],
         }
         xgb_mod = GridSearchCV(
             XGBClassifier(),
@@ -214,8 +216,7 @@ def calc_importance(dset, models, force_=False):
     imp_out = os.path.join(out_dir, "importance.txt")
 
     if not os.path.isfile(imp_out) or force_:
-        imp = pd.concat([feature_importance(dset, m, l)
-                         for l, m in models.items()])
+        imp = pd.concat([feature_importance(dset, m, l) for l, m in models.items()])
         imp.to_csv(imp_out, sep="\t", index=False)
 
     return imp_out
@@ -227,7 +228,11 @@ def feature_importance(dset, model, label):
     labels = dset.targets
     logging.info("Calculating importance for %s...", label)
     imp = permutation_importance(
-        model.estimator, feat, labels, scoring="roc_auc", n_jobs=-1,
+        model.estimator,
+        feat,
+        labels,
+        scoring="roc_auc",
+        n_jobs=-1,
     )
 
     imp_df = pd.DataFrame(imp.importances, index=dset.features.columns)
@@ -238,6 +243,7 @@ def feature_importance(dset, model, label):
     )
     imp_df["model"] = label
     return imp_df
+
 
 # MAIN ------------------------------------------------------------------------
 def main():
@@ -259,9 +265,7 @@ def main():
 
     logging.info("Reading Search Results...")
     psms = mokapot.read_pin(pins, group_column="group")
-    logging.info(
-        "\n%s", psms._data.groupby("group")["Label"].value_counts()
-    )
+    logging.info("\n%s", psms._data.groupby("group")["Label"].value_counts())
 
     psms.add_proteins(td_fasta, missed_cleavages=MISSED_CLEAVAGES)
 

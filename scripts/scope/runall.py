@@ -46,12 +46,19 @@ def tide2pin(target, name):
     out_file = f"pin-out/{name}.make-pin.pin"
 
     if not os.path.isfile(out_file):
-        cmd = ["crux", "make-pin",
-               "--max-charge-feature", "5",
-               "--output-dir", "pin-out",
-               "--top-match", "5",
-               "--fileroot", name,
-               target]
+        cmd = [
+            "crux",
+            "make-pin",
+            "--max-charge-feature",
+            "5",
+            "--output-dir",
+            "pin-out",
+            "--top-match",
+            "5",
+            "--fileroot",
+            name,
+            target,
+        ]
 
         subprocess.run(cmd, check=True)
 
@@ -92,11 +99,12 @@ def load_pins(pin_dir="pin-out", train=False, fasta=None):
     if train:
         pin_files = ["qc.make-pin.pin"]
     else:
-        pin_files = [p for p in os.listdir(pin_dir)
-                     if p.endswith("pin") and "qc" not in p]
+        pin_files = [
+            p for p in os.listdir(pin_dir) if p.endswith("pin") and "qc" not in p
+        ]
 
     small_files = [
-	    "190222S_LCA9_X_FP94BD.make-pin.pin",
+        "190222S_LCA9_X_FP94BD.make-pin.pin",
         "190228S_LCA9_X_FP94BE.make-pin.pin",
         "190222S_LCA9_X_FP94AO.make-pin.pin",
     ]
@@ -116,8 +124,10 @@ def load_pins(pin_dir="pin-out", train=False, fasta=None):
 def run_mokapot(model_type, fasta):
     """Run mokapot with a certain type of model"""
     out_dir = "mokapot-out"
-    out_files = [os.path.join(out_dir, model_type + l + ".txt.gz")
-                 for l in (".psms", ".peptides", ".proteins")]
+    out_files = [
+        os.path.join(out_dir, model_type + l + ".txt.gz")
+        for l in (".psms", ".peptides", ".proteins")
+    ]
 
     if all([os.path.isfile(f) for f in out_files]):
         return tuple(pd.read_csv(f, sep="\t") for f in out_files)
@@ -127,7 +137,7 @@ def run_mokapot(model_type, fasta):
         train, _ = load_pins(train=True)
         model = mokapot.PercolatorModel()
         model.fit(train[0])
-        del(train)
+        del train
         test, pins = load_pins(fasta=fasta)
         results = [d.assign_confidence(model.predict(d)) for d in test]
         results = aggregate_results(results, pins)
@@ -161,10 +171,10 @@ def run_mokapot(model_type, fasta):
     else:
         raise ValueError("Unrecognized model_type")
 
-    _ = [r.to_csv(f, sep="\t", index=False)
-         for r, f in zip(results, out_files)]
+    _ = [r.to_csv(f, sep="\t", index=False) for r, f in zip(results, out_files)]
 
     return results
+
 
 def aggregate_results(results, pins):
     """Aggregate the results"""
@@ -183,6 +193,7 @@ def aggregate_results(results, pins):
         prots.append(res.proteins)
 
     return pd.concat(psms), pd.concat(peps), pd.concat(prots)
+
 
 # MAIN ------------------------------------------------------------------------
 def main():
@@ -219,6 +230,7 @@ def main():
     tide = run_mokapot("tide", FASTA)
 
     logging.info("##### DONE! #####")
+
 
 if __name__ == "__main__":
     main()
