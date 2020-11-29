@@ -41,17 +41,17 @@ benchmark: ${kim}
 ${percolator}: ${scope}
 	cd scripts/percolator && \
 	python3 runall.py && \
-	nbconvert --to html make_figures.ipynb
+	jupyter nbconvert --to html make_figures.ipynb
 
 ${scope}:
 	cd scripts/scope && \
 	python3 runall.py && \
-	nbconvert --to html make_figures.ipynb
+	jupyter nbconvert --to html make_figures.ipynb
 
 ${rna}:
 	cd scripts/rna && \
 	python3 runall.py && \
-	nbconvert --to html make_figures.ipynb
+	jupyter nbconvert --to html make_figures.ipynb
 
 $wrapup:
 	mkdir -b figures && \
