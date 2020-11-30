@@ -49,7 +49,7 @@ ${scope}:
 	jupyter nbconvert --to html make_figures.ipynb
 
 ${rna}:
-	cd scripts/rna && \
+	cd scripts/rna-xl && \
 	python3 runall.py && \
 	jupyter nbconvert --to html make_figures.ipynb
 
