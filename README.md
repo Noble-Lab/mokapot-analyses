@@ -43,10 +43,10 @@ Python 3.8.6
 Verify conda is installed and configured:
 ```bash
 $ conda --version
-conda 4.9.0
+conda 4.9.2
 ```
 
-Verify Crux is installed ad configured:
+Verify Crux is installed and configured:
 ```bash
 $ crux version
 INFO: Beginning version.
