@@ -1,6 +1,9 @@
 # Change this to point to your version of MSFragger
 export MSFRAGGER_PATH ?= ~/bin/MSFragger-3.1.1/MSFragger-3.1.1.jar
 
+# Make sure TMPDIR is set:
+export TMPDIR ?= /tmp
+
 kim = data/pin/kim.pin.gz
 percolator = scripts/percolator/make_figures.html
 scope = scripts/scope/make_figures.html
@@ -9,7 +12,8 @@ rna = scripts/rna-xl/make_figures.html
 all: install ${kim} ${scope} ${rna} ${percolator} benchmark wrapup
 
 install:
-	conda install -c conda-forge \
+	conda install -y -c conda-forge \
+		mkl \
 		tqdm \
 		numpy \
 		pandas \
@@ -20,12 +24,12 @@ install:
 		mono \
 		nbconvert \
 		xgboost \
-		wget && \
-	conda install -c bioconda \
+		wget \
+	&& conda install -y -c bioconda \
 		thermorawfileparser \
 		percolator \
-		triqler && \
-	pip install \
+		triqler \
+	&& pip install \
 		git+git://github.com/wfondrie/mokapot \
 	 	git+git://github.com/wfondrie/wispy \
 		ppx

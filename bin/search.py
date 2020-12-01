@@ -25,9 +25,9 @@ def msfragger(ms_files, max_mem="32G", jar_path=None, **kwargs):
     if jar_path is None:
         jar_path = os.getenv("MSFRAGGER_PATH")
         if not jar_path:
-            jar_path = os.path.expanduser("~/bin/MSFragger-3.1.1/MSFragger-3.1.1.jar")
+            jar_path = "~/bin/MSFragger-3.1.1/MSFragger-3.1.1.jar"
 
-    jar_path = os.path.abspath(jar_path)
+    jar_path = os.path.abspath(os.path.expanduser(jar_path))
     fragger_args = [f"--{k} {v}" for k, v in kwargs.items()]
     cmd = ["java", f"-Xmx{max_mem}", "-jar", jar_path] + fragger_args
 
