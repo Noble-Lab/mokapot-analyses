@@ -8,8 +8,9 @@ kim = data/pin/kim.pin.gz
 percolator = scripts/percolator/make_figures.html
 scope = scripts/scope/make_figures.html
 rna = scripts/rna-xl/make_figures.html
+benchmark = scripts/benchmark/make_figures.html
 
-all: install ${kim} ${scope} ${rna} ${percolator} benchmark wrapup
+all: install ${kim} ${scope} ${rna} ${percolator} ${benchmark} wrapup
 
 install:
 	conda install -y -c conda-forge \
@@ -38,9 +39,10 @@ ${kim}:
 	mkdir -p data/pin && \
 	wget -N -O data/pin/kim.pin.gz https://ndownloader.figshare.com/files/19068101
 
-benchmark: ${kim}
+${benchmark}: ${kim}
 	cd scripts/benchmark && \
-	./cluster.sh
+	./cluster.sh && \
+	jupyter nbconvert --to html make_figures.ipynb
 
 ${percolator}: ${scope}
 	cd scripts/percolator && \
@@ -57,6 +59,6 @@ ${rna}:
 	python3 runall.py && \
 	jupyter nbconvert --to html make_figures.ipynb
 
-$wrapup:
-	mkdir -b figures && \
-	cp */*/figures/*.png figures
+wrapup:
+	mkdir -p figures && \
+	cp scripts/*/figures/*.png figures
