@@ -5,12 +5,13 @@ export MSFRAGGER_PATH ?= ~/bin/MSFragger-3.1.1/MSFragger-3.1.1.jar
 export TMPDIR ?= /tmp
 
 kim = data/pin/kim.pin.gz
-percolator = scripts/percolator/make_figures.html
-scope = scripts/scope/make_figures.html
-rna = scripts/rna-xl/make_figures.html
-benchmark = scripts/benchmark/make_figures.html
+percolator = scripts/percolator
+scope = scripts/scope
+rna = scripts/rna-xl
+benchmark = scripts/benchmark
 
-all: install ${kim} ${scope} ${rna} ${percolator} ${benchmark} wrapup
+all: install ${kim} ${scope}/make_figures.html ${rna}/make_figures.html \
+	${percolator}/make_figures.html ${benchmark}/make_figures.html wrapup
 
 install:
 	conda install -y -c conda-forge \
@@ -39,25 +40,37 @@ ${kim}:
 	mkdir -p data/pin && \
 	wget -N -O data/pin/kim.pin.gz https://ndownloader.figshare.com/files/19068101
 
-${benchmark}: ${kim}
+
+${benchmark}/make_figures.html: ${kim} ${benchmark}/cluster.sh \
+	${benchmark}/runall.py ${benchmark}/make_figures.ipynb
+
 	cd scripts/benchmark && \
 	./cluster.sh && \
-	jupyter nbconvert --to html make_figures.ipynb
+	jupyter nbconvert --to html --execute make_figures.ipynb
 
-${percolator}: ${scope}
+
+${percolator}/make_figures.html: ${percolator}/runall.py \
+	${percolator}/make_figures.ipynb \
+	${scope}/pin-out/190222S_LCA9_X_FP94_col22.make-pin.pin
+
 	cd scripts/percolator && \
 	python3 runall.py && \
-	jupyter nbconvert --to html make_figures.ipynb
+	jupyter nbconvert --to html --execute make_figures.ipynb
 
-${scope}:
+
+${scope}/make_figures.html 	${scope}/pin-out/190222S_LCA9_X_FP94_col22.make-pin.pin: \
+	${scope}/runall.py ${scope}/make_figures.ipynb
+
 	cd scripts/scope && \
 	python3 runall.py && \
-	jupyter nbconvert --to html make_figures.ipynb
+	jupyter nbconvert --to html --execute make_figures.ipynb
 
-${rna}:
+
+${rna}/make_figures.html: ${rna}/runall.py ${rna}/make_figures.ipynb
 	cd scripts/rna-xl && \
 	python3 runall.py && \
-	jupyter nbconvert --to html make_figures.ipynb
+	jupyter nbconvert --to html --execute make_figures.ipynb
+
 
 wrapup:
 	mkdir -p figures && \
