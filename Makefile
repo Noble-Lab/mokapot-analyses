@@ -14,8 +14,7 @@ all: ${kim} ${scope}/make_figures.html ${rna}/make_figures.html \
 	${percolator}/make_figures.html ${benchmark}/make_figures.html wrapup
 
 install: environment.yml
-	conda env create -f environment.yml && \
-	conda activate mokapot
+	conda env create -f environment.yml
 
 ${kim}:
 	mkdir -p data/pin && \

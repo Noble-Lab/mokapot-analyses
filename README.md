@@ -10,9 +10,8 @@ provide different results depending on the hardware they are run on.
 
 ### Requirements  
 **Operating System:** Our code was written for CentOS7 Linux machines, but
-should be compatible with MacOS and other Linux distributions as well. The code
-is unlikely to work on
-Windows.  
+should be compatible other Linux distributions as well. The code
+is unlikely to work on Windows and may need slight changes for MacOS.  
 
 **Hardware:** To most accurately reproduce our results, a 12-core machine with a
 minimum of 32 Gb of memory should be used.
@@ -87,15 +86,14 @@ export MSFRAGGER=~/bin/MSFragger-3.1.1/MSFragger-3.1.1.jar
 ```
 
 ## Running the Analyses
-Running the analyses is easy, but will potentially take days. First, we highly
-recommend creating a new conda environment for the analyses. The scripts will
-install packages into this environment:
+
+Running the analyses is easy, but will potentially take days. First, we can use GNU make to install the prerequisite packages into a new conda environment:
 
 ```bash
-$ conda create -n mokapot && conda activate mokapot
+$ make install && conda activate mokapot
 ```
 
-Then the analyses are run using the GNU make:
+Then the analyses can be run simply with:
 ```bash
 $ make
 ```
@@ -105,7 +103,3 @@ Once complete, all of the figures will be present in the `figures` directory.
 
 ## Questions?
 If you have problems or questions, feel free to ask Will Fondrie (wfondrie@uw.edu).
-
-
-
-
