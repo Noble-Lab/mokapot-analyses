@@ -12,8 +12,12 @@ set -e
 echo "Start - `date`"
 
 export GOMP_CPU_AFFINITY="${SGE_BINDING}"
-cp -v ../../data/pin/kim.pin.gz ${TMPDIR}/test.pin.gz
-gunzip ${TMPDIR}/test.pin.gz
+
+if [ ! -f "${TMPDIR}/test.pin"]; then
+    cp -v ../../data/pin/kim.pin.gz ${TMPDIR}/test.pin.gz
+    gunzip ${TMPDIR}/test.pin.gz
+fi
+
 python runall.py
 
 echo "Finish - `date`"

@@ -10,31 +10,12 @@ scope = scripts/scope
 rna = scripts/rna-xl
 benchmark = scripts/benchmark
 
-all: install ${kim} ${scope}/make_figures.html ${rna}/make_figures.html \
+all: ${kim} ${scope}/make_figures.html ${rna}/make_figures.html \
 	${percolator}/make_figures.html ${benchmark}/make_figures.html wrapup
 
-install:
-	conda install -y -c conda-forge \
-		mkl \
-		tqdm \
-		numpy \
-		pandas \
-		matplotlib \
-		seaborn \
-		scikit-learn \
-		numba \
-		mono \
-		nbconvert \
-		xgboost \
-		wget \
-	&& conda install -y -c bioconda \
-		thermorawfileparser \
-		percolator \
-		triqler \
-	&& pip install \
-		git+git://github.com/wfondrie/mokapot \
-	 	git+git://github.com/wfondrie/wispy \
-		ppx
+install: environment.yml
+	conda env create -f environment.yml && \
+	conda activate mokapot
 
 ${kim}:
 	mkdir -p data/pin && \

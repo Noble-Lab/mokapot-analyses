@@ -1,0 +1,26 @@
+name: mokapot
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - mkl
+  - tqdm
+  - numpy
+  - pandas
+  - matplotlib
+  - seaborn
+  - scikit-learn
+  - numba
+  - mono
+  - nbconvert
+  - ipykernel
+  - xgboost
+  - wget
+  - thermorawfileparser
+  - percolator
+  - triqler
+  - pip
+  - pip:
+      - mokapot
+      - ppx
+      - git+git://github.com/wfondrie/wispy
