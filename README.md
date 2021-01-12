@@ -1,11 +1,11 @@
 # Code for evaluating mokapot
 This repository contains the code for reproducing the results from "mokapot:
-Fast and flexible semi-supervised learning for peptide detection**. 
+Fast and flexible semi-supervised learning for peptide detection." 
 
 ## Reproducing the manuscript
 The provided can fully reproduce the figures and analyses presented in the
 manuscript, provided that the necessary software are installed and data are
-present. Additionally, some analyses (such as the benchmarking experiments** will
+present. Additionally, some analyses (such as the benchmarking experiments) will
 provide different results depending on the hardware they are run on.
 
 ### Requirements  
@@ -87,7 +87,8 @@ export MSFRAGGER=~/bin/MSFragger-3.1.1/MSFragger-3.1.1.jar
 
 ## Running the Analyses
 
-Running the analyses is easy, but will potentially take days. First, we can use GNU make to install the prerequisite packages into a new conda environment:
+Running the analyses is easy, but will potentially take days. First, we can use
+GNU make to install the prerequisite packages into a new conda environment:
 
 ```bash
 $ make install && conda activate mokapot
