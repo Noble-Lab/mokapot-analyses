@@ -13,6 +13,7 @@ benchmark = scripts/benchmark
 all: ${kim} ${scope}/make_figures.html ${rna}/make_figures.html \
 	${percolator}/make_figures.html ${benchmark}/make_figures.html wrapup
 
+
 install: environment.yml
 	conda env create -f environment.yml
 
@@ -38,8 +39,8 @@ ${percolator}/make_figures.html: ${percolator}/runall.py \
 	jupyter nbconvert --to html --execute make_figures.ipynb
 
 
-${scope}/make_figures.html 	${scope}/pin-out/190222S_LCA9_X_FP94_col22.make-pin.pin: \
-	${scope}/runall.py ${scope}/make_figures.ipynb
+${scope}/make_figures.html ${scope}/pin-out/190222S_LCA9_X_FP94_col22.make-pin.pin: \
+	${scope}/runall.py ${scope}/make_figures.ipynb	
 
 	cd scripts/scope && \
 	python3 runall.py && \
