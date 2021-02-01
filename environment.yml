@@ -12,6 +12,7 @@ dependencies:
   - scikit-learn
   - numba
   - mono
+  - notebook
   - nbconvert
   - ipykernel
   - xgboost
@@ -20,7 +21,7 @@ dependencies:
   - percolator
   - triqler
   - pip
-  - mokapot==0.5.1
+  - mokapot==0.5
   - pip:
       - ppx
       - git+git://github.com/wfondrie/wispy
