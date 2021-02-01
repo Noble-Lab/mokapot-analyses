@@ -20,7 +20,7 @@ dependencies:
   - percolator
   - triqler
   - pip
+  - mokapot==0.5.1
   - pip:
-      - mokapot
       - ppx
       - git+git://github.com/wfondrie/wispy
